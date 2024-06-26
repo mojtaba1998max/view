@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        input, textarea, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            cursor: pointer;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            display: none;
+            color: green;
+        }
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Proxy Viewer</h1>
+        <label for="url">YouTube Video URL:</label>
+        <input type="text" id="url" placeholder="Enter YouTube Video URL">
+        <label for="proxies">Proxies (ip:port):</label>
+        <textarea id="proxies" rows="10" placeholder="Enter proxies, one per line"></textarea>
+        <button id="submit">Submit</button>
+        <div id="status">
+            <span class="loading"></span> Sending requests...
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#submit').on('click', function() {
+            const url = $('#url').val();
+            const proxies = $('#proxies').val().split('\n').map(proxy => proxy.trim()).filter(proxy => proxy);
+
+            if (url && proxies.length > 0) {
+                $('#status').show();
+                $.ajax({
+                    url: '/send-requests',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ url, proxies }),
+                    success: function(response) {
+                        $('#status').hide();
+                        alert(response);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $('#status').hide();
+                        console.error(`Error: ${textStatus}, ${errorThrown}`);
+                    }
+                });
+            } else {
+                alert('Please enter both URL and Proxies');
+            }
+        });
+    </script>
+</body>
+</html>
