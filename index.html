@@ -55,31 +55,6 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $('#submit').on('click', function() {
-            const url = $('#url').val();
-            const proxies = $('#proxies').val().split('\n').map(proxy => proxy.trim()).filter(proxy => proxy);
-
-            if (url && proxies.length > 0) {
-                $('#status').show();
-                $.ajax({
-                    url: '/send-requests',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ url, proxies }),
-                    success: function(response) {
-                        $('#status').hide();
-                        alert(response);
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        $('#status').hide();
-                        console.error(`Error: ${textStatus}, ${errorThrown}`);
-                    }
-                });
-            } else {
-                alert('Please enter both URL and Proxies');
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
